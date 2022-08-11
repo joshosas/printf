@@ -1,4 +1,5 @@
 #include "main.h"
+
 /**
  * handle_print - function prints arg based on data type
  * @fmt: Formatted string in which to print the arguments.
@@ -6,7 +7,7 @@
  * @ind: integer
  * @buffer: array buffer to handle print.
  * @flags: Calculates active flags
- * @width: get width.
+ * @width: Get width
  * @precision: Precision specification
  * @size: Size specifier
  * Return: printf_chars
@@ -27,6 +28,34 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 		if (fmt[*ind] == fmt_types[i].fmt)
 			return (fmt_types[i].fn(list, buffer, flags, width, precision, size));
 	}
-
+	
+		if (fmt_types[i].fmt == '\0')
+		{
+			if (fmt[*ind] == '\0')
+			{
+				return (-1);
+			}
+			unknow_len += write(1, "%%", 1);
+			if (fmt[*ind - 1] == ' ')
+			{
+				unknow_len += write(1, " ", 1);
+			}
+			else if (width)
+			{
+				--(*ind);
+				while (fmt[*ind] != ' ' && fmt[*ind] != '%')
+				{
+					--(*ind);
+				}
+				if (fmt[*ind] == ' ')
+				{
+					--(*ind);
+				}
+				return (1);
+			}
+			unknow_len += write(1, &fmt[*ind], 1);
+			return (unknow_len);
+		}
+	
 	return (printed_chars);
 }
